@@ -1,0 +1,141 @@
+/* Fondo y tipografía general */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #c8d8be;
+  color: #333;
+}
+
+/* Encabezado */
+header h1 {
+  text-align: center;
+  color: #0d6efd;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Tarjetas con efecto hover */
+.card {
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+.card:hover {
+  transform: scale(1.05);
+}
+
+/* Botones */
+.btn-primary {
+  background-color: #0d6efd;
+  border: none;
+}
+.btn-primary:hover {
+  background-color: #084298;
+}
+
+/* Footer */
+footer {
+  background-color: #212529;
+  color: #ffffff;
+  text-align: center;
+  padding: 15px;
+}
+
+
+
+
+
+
+/* Encabezados */
+h1, h2, h3 {
+  color: #0d6efd;
+  text-align: center;
+}
+
+/* Secciones con márgenes */
+section {
+  margin: 20px;
+  padding: 15px;
+}
+
+/* Tarjetas con bordes y sombras */
+.card {
+  border: 1px solid #3756ab;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+.card:hover {
+  transform: scale(1.05);
+}
+
+/* Botones */
+.btn-primary {
+  background-color: #0d6efd;
+  border: none;
+}
+.btn-primary:hover {
+  background-color: #084298;
+}
+
+/* Footer */
+footer {
+  background-color: #212529;
+  color: #ffffff;
+  text-align: center;
+  padding: 15px;
+}
+
+
+
+
+
+/* 📱 Media query para pantallas pequeñas */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 1.5rem; /* título más pequeño en celulares */
+  }
+
+  nav a {
+    display: block;   /* enlaces del menú uno debajo del otro */
+    margin: 5px 0;
+  }
+
+  section {
+    padding: 10px;    /* menos espaciado en secciones */
+  }
+
+  .card {
+    margin-bottom: 20px; /* más separación entre tarjetas */
+  }
+
+  footer {
+    font-size: 0.9rem; /* texto más pequeño en el pie de página */
+  }
+}
+
+
+
+
+#quienes img {
+  max-width: 400px;   /* limita el ancho máximo de la imagen */
+  height: auto;       /* mantiene la proporción */
+  display: block;     /* asegura que se comporte como bloque */
+  margin: 0 auto;     /* centra la imagen */
+}
+
+
+
+#servicios img {
+  max-width: 250px;   /* limita el ancho máximo de la imagen */
+  height: auto;       /* mantiene la proporción */
+  display: block;     /* asegura que se comporte como bloque */
+  margin: 0 auto;     /* centra la imagen */
+}
+
+
+
+
+.card img {
+  width: 100%;           /* ocupa todo el ancho del cuadro */
+  height: 200px;         /* define una altura uniforme */
+  object-fit: cover;     /* recorta sin deformar la imagen */
+  border-radius: 8px;    /* opcional: bordes suaves */
+}

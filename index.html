@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tecno Plus</title>
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Tu CSS personalizado -->
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
@@ -12,85 +21,198 @@
     <h1>Tecno Plus</h1>
 </header>
 
-<nav>
-    <a href="#inicio">Inicio</a> |
-    <a href="#quienes">Quiénes Somos</a> |
-    <a href="#servicios">Servicios</a> |
-    <a href="#contacto">Contacto</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Tecno Plus</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="menu">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="#quienes">Quiénes Somos</a></li>
+        <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+      </ul>
+    </div>
+  </div>
 </nav>
 
 <main>
 
-    <section id="inicio">
-        <h2>Inicio</h2>
-        <p>
-            Bienvenido a Tecno Plus, un emprendimiento dedicado a la venta de equipos tecnológicos,
-            accesorios para computadoras y teléfonos, además de servicios de soporte informático.
+    <section id="inicio" class="text-center p-5 bg-light">
+  <div class="container">
+    <h2 class="mb-3">Bienvenido a <span class="text-primary">Tecno Plus</span></h2>
+    <p class="lead mb-4">
+      Un emprendimiento dedicado a la venta de equipos tecnológicos, accesorios para computadoras y teléfonos,
+      además de servicios de soporte informático.
+    </p>
+    <a href="#servicios" class="btn btn-primary btn-lg">Ver Servicios</a>
+  </div>
+</section>
+
+    <section id="quienes" class="p-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <!-- Columna de texto -->
+      <div class="col-md-6">
+        <h2 class="mb-3">Quiénes Somos</h2>
+        <p class="lead">
+          Tecno Plus es un emprendimiento que ofrece soluciones tecnológicas para estudiantes,
+          profesionales y empresas. Nos dedicamos a la venta de equipos informáticos, accesorios
+          tecnológicos y servicios de soporte técnico. Nuestro objetivo es brindar productos de calidad,
+          atención personalizada y soluciones eficientes. Buscamos ayudar a nuestros clientes a mejorar
+          su productividad mediante herramientas tecnológicas confiables. También ofrecemos asesoría
+          técnica para el uso adecuado de dispositivos y programas. Nuestro compromiso es la innovación,
+          la responsabilidad y la satisfacción del cliente en cada servicio que brindamos.
         </p>
-    </section>
+      </div>
+      <!-- Columna de imagen -->
+      <div class="col-md-6 text-center">
+        <img src="Imagen.jpeg" class="card-img-top" alt="Quienes somos">
+      </div>
+    </div>
+  </div>
+</section>
 
-    <section id="quienes">
-        <article>
-            <h2>Quiénes Somos</h2>
+    <section id="servicios" class="p-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-4">Servicios / Productos</h2>
+    <div class="row">
+      <!-- Tarjeta 1 -->
+      <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow">
+          <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=250" class="card-img-top" alt="Laptops y computadoras">
+          <div class="card-body">
+            <h5 class="card-title">Laptops y Computadoras</h5>
+            <p class="card-text">Equipos de alto rendimiento para trabajo, estudio y entretenimiento.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Tarjeta 2 -->
+      <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow">
+          <img src="Imagen2.jpeg" class="card-img-top" alt="Accesorios tecnológicos">
+          <div class="card-body">
+            <h5 class="card-title">Accesorios Tecnológicos</h5>
+            <p class="card-text">Teclados, mouse, audífonos y más para complementar tu equipo.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Tarjeta 3 -->
+      <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow">
+          <img src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=400&h=250" class="card-img-top" alt="Teléfonos móviles">
+          <div class="card-body">
+            <h5 class="card-title">Teléfonos Móviles</h5>
+            <p class="card-text">Modelos actuales con garantía y soporte técnico especializado.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Tarjeta 4 -->
+      <div class="col-md-6 mb-3">
+        <div class="card h-100 shadow">
+          <div class="card-body">
+            <h5 class="card-title">Soporte Técnico</h5>
+            <p class="card-text">Asistencia especializada para resolver problemas de hardware y software.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Tarjeta 5 -->
+      <div class="col-md-6 mb-3">
+        <div class="card h-100 shadow">
+          <div class="card-body">
+            <h5 class="card-title">Instalación de Software</h5>
+            <p class="card-text">Instalación y configuración de programas según tus necesidades.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-            <p>
-                Tecno Plus es un emprendimiento que ofrece soluciones tecnológicas para estudiantes,
-                profesionales y empresas. Nos dedicamos a la venta de equipos informáticos, accesorios
-                tecnológicos y servicios de soporte técnico. Nuestro objetivo es brindar productos de calidad,
-                atención personalizada y soluciones eficientes. Buscamos ayudar a nuestros clientes a mejorar
-                su productividad mediante herramientas tecnológicas confiables. También ofrecemos asesoría
-                técnica para el uso adecuado de dispositivos y programas. Nuestro compromiso es la innovación,
-                la responsabilidad y la satisfacción del cliente en cada servicio que brindamos.
-            </p>
+    <section id="contacto" class="p-5">
+  <div class="container">
+    <h2 class="text-center mb-4">Contacto</h2>
+    <div class="row">
+      <!-- Información de contacto -->
+      <div class="col-md-6">
+        <!-- Botón para correo -->
+<a href="mailto:tecnoplus@gmail.com" class="btn btn-outline-primary mb-2">
+  📧 Enviar correo
+</a><br>
 
-            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600"
-                 alt="Tecnología"
-                 width="350">
-        </article>
-    </section>
+<!-- Botón para teléfono -->
+<a href="tel:0999999999" class="btn btn-outline-success mb-2">
+  📞 Llamar
+</a><br>
 
-    <section id="servicios">
-        <h2>Servicios / Productos</h2>
+<!-- Botón para ubicación -->
+<a href="https://maps.google.com/?q=Cuenca,Ecuador" target="_blank" class="btn btn-outline-dark mb-2">
+  📍 Ver ubicación
+</a><br>
 
-        <ul>
-            <li>Laptops y computadoras</li>
-            <li>Accesorios tecnológicos</li>
-            <li>Teléfonos móviles</li>
-            <li>Soporte técnico</li>
-            <li>Instalación de software</li>
-        </ul>
-    </section>
+<!-- Botones para redes sociales -->
+<a href="https://facebook.com" target="_blank" class="btn btn-primary mb-2">
+  👍 Facebook
+</a>
+<a href="https://instagram.com" target="_blank" class="btn btn-danger mb-2">
+  📷 Instagram
+</a>
+      </div>
+      <!-- Formulario de contacto -->
+      <div class="col-md-6">
+        <form>
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" placeholder="Tu nombre" required>
+          </div>
+          <div class="mb-3">
+            <label for="correo" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="correo" placeholder="tuemail@ejemplo.com" required>
+          </div>
+          <div class="mb-3">
+            <label for="asunto" class="form-label">Asunto</label>
+            <input type="text" class="form-control" id="asunto" placeholder="Motivo del mensaje" required>
+          </div>
+          <div class="mb-3">
+            <label for="mensaje" class="form-label">Mensaje</label>
+            <textarea class="form-control" id="mensaje" rows="4" placeholder="Escribe tu mensaje aquí" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-success">Enviar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <section id="contacto">
-        <h2>Contacto</h2>
-
-        <p>Correo: tecnoplus@gmail.com</p>
-        <p>Teléfono: 0999999999</p>
-        <p>Dirección: Cuenca, Ecuador</p>
-
-        <p>
-            Redes sociales:
-            <a href="https://facebook.com">Facebook</a> |
-            <a href="https://instagram.com">Instagram</a>
-        </p>
-    </section>
-
-    <section>
-        <h2>Video del proyecto</h2>
-
-        <iframe width="560" height="315"
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-            allowfullscreen>
-        </iframe>
-    </section>
+   <section id="video" class="p-5">
+  <div class="container text-center">
+    <h2 class="mb-4">Video del proyecto</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+         <div class="ratio ratio-16x9">
+          <iframe src="https://www.youtube.com/embed/gnvacD7KHLc" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 </main>
 
-<aside>
-    <h3>Información adicional</h3>
-
-    <p>Horario de atención: Lunes a sábado de 08:00 a 18:00</p>
-    <p>Promoción: 10% de descuento en accesorios tecnológicos esta semana</p>
+<aside class="p-4 bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Información adicional</h3>
+        <p><strong>Horario de atención:</strong> Lunes a sábado de 08:00 a 18:00</p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Promoción:</strong> 10% de descuento en accesorios tecnológicos esta semana</p>
+      </div>
+    </div>
+  </div>
 </aside>
 
 <footer>
