@@ -5,7 +5,7 @@ body {
   color: #333;
 }
 
-/* Encabezado */
+/* Encabezado */ 
 header h1 {
   text-align: center;
   color: #0d6efd;
@@ -13,13 +13,6 @@ header h1 {
 }
 
 /* Tarjetas con efecto hover */
-.card {
-  border-radius: 10px;
-  transition: transform 0.3s ease;
-}
-.card:hover {
-  transform: scale(1.05);
-}
 
 /* Botones */
 .btn-primary {

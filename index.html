@@ -215,9 +215,53 @@
   </div>
 </aside>
 
+<section id="formularioExtra" class="container mt-4 card">
+  <h2 class="mb-3">Formulario de productos</h2>
+  <form id="formProductos" class="mb-3">
+    <div class="mb-2">
+      <label for="nombre" class="form-label">Nombre</label>
+     <input type="text" id="nombreProducto" class="form-control" placeholder="Nombre del producto" required>
+   <small id="errorNombre" class="text-danger"></small>
+    </div>
+    <div class="mb-2">
+      <label for="descripcion" class="form-label">Descripción</label>
+      <textarea id="descripcion" class="form-control" placeholder="Descripción breve" required></textarea>
+    <small id="errordescripcion" class="text-danger"></small>
+    </div>
+    <div class="mb-2">
+      <label for="categoria" class="form-label">Categoría / Tipo</label>
+      <select id="categoria" class="form-select" required>
+        <option value="">Seleccione una categoría</option>
+        <option value="Computadoras">Computadoras</option>
+        <option value="Accesorios">Accesorios</option>
+        <option value="Teléfonos">Teléfonos</option>
+        <option value="Software">Software</option>
+      </select>
+    <small id="errorCategoria" class="text-danger"></small>
+    </div>
+    <button type="submit" class="btn btn-primary">Agregar producto</button>
+  </form>
+
+  <ul id="listaProductos" class="list-group"></ul>
+  <p id="contadorProductos" class="mt-2">Total productos: 0</p>
+</section>
+
+
+<section id="dinamica" class="container mt-4 card">
+  <h2 class="mb-3">Sección dinámica</h2>
+  <form id="miFormulario" class="mb-3">
+    <input type="text" id="campoTexto" class="form-control mb-2" placeholder="Escribe un dato">
+    <button type="submit" class="btn btn-primary">Agregar</button>
+  </form>
+
+  <ul id="listaRegistros" class="list-group"></ul>
+  <p id="contador" class="mt-2">Total registros: 0</p>
+</section>
 <footer>
     <p>Jonathan Vera - Desarrollo de Aplicaciones Web - 2026</p>
 </footer>
 
+
+<script src="script.js"></script>
 </body>
 </html>
