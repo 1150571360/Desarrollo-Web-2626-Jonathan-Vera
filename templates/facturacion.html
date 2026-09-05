@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Tecno Plus - Facturación{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+      <h2 class="section-title mb-0">Facturación</h2>
+      <a href="{{ url_for('nueva_facturacion') }}" class="btn btn-accent">
+        <i class="bi bi-receipt-cutoff me-1"></i> Nueva factura
+      </a>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-tecno align-middle">
+        <thead>
+          <tr>
+            <th>N° Factura</th>
+            <th>Cliente</th>
+            <th>Sucursal</th>
+            <th>Productos</th>
+            <th>Subtotal</th>
+            <th>IVA</th>
+            <th>Total</th>
+            <th>Pago</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for factura in facturas %}
+          <tr>
+            <td>{{ factura.numero }}</td>
+            <td>{{ factura.cliente }}</td>
+            <td>{{ factura.sucursal }}</td>
+            <td>
+              <ul class="mb-0 ps-3">
+                {% for p in factura.productos %}
+                  <li>{{ p }}</li>
+                {% endfor %}
+              </ul>
+            </td>
+            <td>${{ "%.2f"|format(factura.subtotal) }}</td>
+            <td>${{ "%.2f"|format(factura.iva) }}</td>
+            <td class="fw-bold text-accent">${{ "%.2f"|format(factura.total) }}</td>
+            <td>{{ factura.metodo_pago }}</td>
+            <td>
+              {% if factura.estado == 'Pagada' %}
+                <span class="badge bg-success">Pagada</span>
+              {% else %}
+                <span class="badge bg-warning text-dark">Pendiente</span>
+              {% endif %}
+            </td>
+            <td>{{ factura.fecha }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="10" class="text-center text-muted">No hay facturas registradas.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

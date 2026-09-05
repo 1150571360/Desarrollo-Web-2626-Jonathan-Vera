@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}Tecno Plus - Inicio{% endblock %}
+
+{% block content %}
+
+<section id="inicio" class="hero-tecno text-center text-white">
+  <div class="container py-5">
+    <h1 class="display-5 fw-bold mb-3">Bienvenido a <span class="text-accent">Tecno Plus</span></h1>
+    <p class="lead mb-4">
+      Un emprendimiento dedicado a la venta de equipos tecnológicos, accesorios para computadoras
+      y teléfonos, además de servicios de soporte informático.
+    </p>
+    <a href="#servicios" class="btn btn-accent btn-lg px-4">Ver Servicios</a>
+  </div>
+</section>
+
+<section id="quienes" class="py-5">
+  <div class="container">
+    <div class="row align-items-center g-4">
+      <div class="col-md-6">
+        <h2 class="section-title mb-3">Quiénes Somos</h2>
+        <p class="lead">
+          Tecno Plus es un emprendimiento que ofrece soluciones tecnológicas para estudiantes,
+          profesionales y empresas. Nos dedicamos a la venta de equipos informáticos, accesorios
+          tecnológicos y servicios de soporte técnico. Nuestro objetivo es brindar productos de
+          calidad, atención personalizada y soluciones eficientes.
+        </p>
+      </div>
+      <div class="col-md-6 text-center">
+        <img src="{{ url_for('static', filename='img/Imagen.jpeg') }}" class="img-fluid rounded shadow" alt="Quiénes somos - Tecno Plus">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="servicios" class="py-5 bg-light-tecno">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">Servicios / Productos</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card card-tecno h-100">
+          <div class="card-icon"><i class="bi bi-laptop"></i></div>
+          <div class="card-body">
+            <h5 class="card-title">Computadoras</h5>
+            <p class="card-text">Equipos de alto rendimiento para trabajo, estudio y entretenimiento.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card card-tecno h-100">
+          <img src="{{ url_for('static', filename='img/Imagen2.jpeg') }}" class="card-img-top" alt="Accesorios tecnológicos">
+          <div class="card-body">
+            <h5 class="card-title">Accesorios</h5>
+            <p class="card-text">Teclados, mouse, audífonos y más para complementar tu equipo.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card card-tecno h-100">
+          <div class="card-icon"><i class="bi bi-phone"></i></div>
+          <div class="card-body">
+            <h5 class="card-title">Teléfonos</h5>
+            <p class="card-text">Modelos actuales con garantía y soporte técnico especializado.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card card-tecno h-100">
+          <div class="card-icon"><i class="bi bi-tools"></i></div>
+          <div class="card-body">
+            <h5 class="card-title">Soporte Técnico</h5>
+            <p class="card-text">Asistencia especializada para resolver problemas de hardware y software.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card card-tecno h-100">
+          <div class="card-icon"><i class="bi bi-cpu"></i></div>
+          <div class="card-body">
+            <h5 class="card-title">Instalación de Software</h5>
+            <p class="card-text">Instalación y configuración de programas según tus necesidades.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contacto" class="py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">Contacto</h2>
+    <div class="row g-4">
+      <div class="col-md-6">
+        <a href="mailto:tecnoplus@gmail.com" class="btn btn-outline-tecno w-100 mb-2 text-start">
+          <i class="bi bi-envelope-fill me-2"></i> tecnoplus@gmail.com
+        </a>
+        <a href="tel:0999999999" class="btn btn-outline-tecno w-100 mb-2 text-start">
+          <i class="bi bi-telephone-fill me-2"></i> 0999999999
+        </a>
+        <a href="https://maps.google.com/?q=Cuenca,Ecuador" target="_blank" class="btn btn-outline-tecno w-100 mb-2 text-start">
+          <i class="bi bi-geo-alt-fill me-2"></i> Cuenca, Ecuador
+        </a>
+        <a href="https://facebook.com" target="_blank" class="btn btn-outline-tecno w-100 mb-2 text-start">
+          <i class="bi bi-facebook me-2"></i> Facebook
+        </a>
+        <a href="https://instagram.com" target="_blank" class="btn btn-outline-tecno w-100 text-start">
+          <i class="bi bi-instagram me-2"></i> Instagram
+        </a>
+      </div>
+      <div class="col-md-6">
+        <form>
+          <div class="mb-3">
+            <label for="nombreContacto" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombreContacto" placeholder="Tu nombre" required>
+          </div>
+          <div class="mb-3">
+            <label for="correoContacto" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="correoContacto" placeholder="tuemail@ejemplo.com" required>
+          </div>
+          <div class="mb-3">
+            <label for="asuntoContacto" class="form-label">Asunto</label>
+            <input type="text" class="form-control" id="asuntoContacto" placeholder="Motivo del mensaje" required>
+          </div>
+          <div class="mb-3">
+            <label for="mensajeContacto" class="form-label">Mensaje</label>
+            <textarea class="form-control" id="mensajeContacto" rows="4" placeholder="Escribe tu mensaje aquí" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-accent">Enviar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<aside class="py-4 bg-light-tecno">
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <h5><i class="bi bi-clock-fill text-accent me-2"></i>Horario de atención</h5>
+        <p class="mb-0">Lunes a sábado de 08:00 a 18:00</p>
+      </div>
+      <div class="col-md-6">
+        <h5><i class="bi bi-tag-fill text-accent me-2"></i>Promoción</h5>
+        <p class="mb-0">10% de descuento en accesorios tecnológicos esta semana</p>
+      </div>
+    </div>
+  </div>
+</aside>
+
+{% endblock %}

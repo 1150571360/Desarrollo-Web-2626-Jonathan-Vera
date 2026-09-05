@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Tecno Plus - Nueva factura{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container" style="max-width: 640px;">
+    <h2 class="section-title mb-4">Nueva factura</h2>
+
+    <div class="card card-tecno p-4">
+      <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+          {{ form.numero.label(class="form-label") }}
+          {{ form.numero(class="form-control" + (" is-invalid" if form.numero.errors else ""), placeholder="001-001-000000123") }}
+          {% for error in form.numero.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.cliente.label(class="form-label") }}
+          {{ form.cliente(class="form-control" + (" is-invalid" if form.cliente.errors else "")) }}
+          {% for error in form.cliente.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.sucursal.label(class="form-label") }}
+          {{ form.sucursal(class="form-control" + (" is-invalid" if form.sucursal.errors else "")) }}
+          {% for error in form.sucursal.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.productos.label(class="form-label") }}
+          {{ form.productos(class="form-control" + (" is-invalid" if form.productos.errors else ""), rows="2", placeholder="Laptop, Mouse, Audífonos") }}
+          {% for error in form.productos.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.subtotal.label(class="form-label") }}
+          {{ form.subtotal(class="form-control" + (" is-invalid" if form.subtotal.errors else "")) }}
+          {% for error in form.subtotal.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+          <div class="form-text">El IVA (12%) y el total se calculan automáticamente.</div>
+        </div>
+
+        <div class="mb-3">
+          {{ form.metodo_pago.label(class="form-label") }}
+          {{ form.metodo_pago(class="form-select" + (" is-invalid" if form.metodo_pago.errors else "")) }}
+          {% for error in form.metodo_pago.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.estado.label(class="form-label") }}
+          {{ form.estado(class="form-select" + (" is-invalid" if form.estado.errors else "")) }}
+          {% for error in form.estado.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-4">
+          {{ form.fecha.label(class="form-label") }}
+          {{ form.fecha(class="form-control" + (" is-invalid" if form.fecha.errors else ""), placeholder="dd/mm/aaaa") }}
+          {% for error in form.fecha.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="d-flex gap-2">
+          {{ form.submit(class="btn btn-accent flex-fill") }}
+          <a href="{{ url_for('facturacion') }}" class="btn btn-outline-tecno flex-fill">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

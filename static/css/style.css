@@ -1,0 +1,185 @@
+/* ==========================================================================
+   Tecno Plus — Paleta tecnológica azul
+   ========================================================================== */
+
+:root {
+  --tp-navy: #0a1f44;       /* azul oscuro / fondo principal */
+  --tp-blue-dark: #0d2a5c;  /* azul intermedio */
+  --tp-blue: #2563eb;       /* azul primario */
+  --tp-cyan: #22d3ee;       /* acento cian tecnológico */
+  --tp-light: #eaf2ff;      /* fondo claro azulado */
+  --tp-gray: #64748b;       /* texto secundario */
+  --tp-white: #ffffff;
+}
+
+* {
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+}
+
+body {
+  background-color: var(--tp-white);
+  color: #1e293b;
+}
+
+.text-accent { color: var(--tp-cyan) !important; }
+.bg-light-tecno { background-color: var(--tp-light); }
+
+/* ---------------- Navbar ---------------- */
+.navbar-tecno {
+  background: linear-gradient(90deg, var(--tp-navy), var(--tp-blue-dark));
+  box-shadow: 0 2px 10px rgba(10, 31, 68, 0.25);
+}
+
+.navbar-tecno .brand-icon { color: var(--tp-cyan); }
+
+.navbar-tecno .nav-link {
+  color: #dbe7ff;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.navbar-tecno .nav-link:hover {
+  color: var(--tp-cyan);
+}
+
+.btn-outline-accent {
+  border: 1px solid var(--tp-cyan);
+  color: var(--tp-cyan) !important;
+}
+
+.btn-outline-accent:hover {
+  background-color: var(--tp-cyan);
+  color: var(--tp-navy) !important;
+}
+
+/* ---------------- Hero ---------------- */
+.hero-tecno {
+  background: linear-gradient(135deg, var(--tp-navy) 0%, var(--tp-blue-dark) 55%, var(--tp-blue) 100%);
+  position: relative;
+}
+
+.section-title {
+  color: var(--tp-navy);
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.section-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--tp-blue), var(--tp-cyan));
+  border-radius: 2px;
+}
+
+.text-center .section-title::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ---------------- Botones ---------------- */
+.btn-accent {
+  background: linear-gradient(90deg, var(--tp-blue), var(--tp-cyan));
+  color: var(--tp-white);
+  border: none;
+  font-weight: 600;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-accent:hover {
+  color: var(--tp-white);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+
+.btn-outline-tecno {
+  border: 1px solid var(--tp-blue);
+  color: var(--tp-blue);
+  background: transparent;
+  font-weight: 500;
+}
+
+.btn-outline-tecno:hover {
+  background-color: var(--tp-blue);
+  color: var(--tp-white);
+}
+
+/* ---------------- Tarjetas ---------------- */
+.card-tecno {
+  border: 1px solid #dde7f7;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(10, 31, 68, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.card-tecno:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
+}
+
+.card-tecno .card-img-top {
+  height: 180px;
+  object-fit: cover;
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  color: var(--tp-blue);
+  text-align: center;
+  padding-top: 1.5rem;
+}
+
+.card-title { color: var(--tp-navy); font-weight: 600; }
+
+/* ---------------- Badges ---------------- */
+.badge-tecno {
+  background-color: var(--tp-light);
+  color: var(--tp-blue-dark);
+  border: 1px solid #c7d9f7;
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+/* ---------------- Alertas ---------------- */
+.alert-info-tecno {
+  background-color: var(--tp-light);
+  border: 1px solid #c7d9f7;
+  color: var(--tp-blue-dark);
+  border-radius: 10px;
+}
+
+/* ---------------- Tablas ---------------- */
+.table-tecno thead {
+  background: linear-gradient(90deg, var(--tp-navy), var(--tp-blue-dark));
+  color: var(--tp-white);
+}
+
+.table-tecno {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(10, 31, 68, 0.08);
+}
+
+.table-tecno tbody tr:hover {
+  background-color: var(--tp-light);
+}
+
+/* ---------------- Footer ---------------- */
+.footer-tecno {
+  background: linear-gradient(90deg, var(--tp-navy), var(--tp-blue-dark));
+  color: #dbe7ff;
+}
+
+/* ---------------- Formularios ---------------- */
+.form-label { color: var(--tp-navy); font-weight: 500; }
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--tp-blue);
+  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.2);
+}

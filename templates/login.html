@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Tecno Plus - Ingresar{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container" style="max-width: 420px;">
+    <div class="card card-tecno p-4">
+      <h2 class="section-title text-center mb-4">Acceso al sistema</h2>
+      <form>
+        <div class="mb-3">
+          <label for="usuario" class="form-label">Usuario</label>
+          <input type="text" class="form-control" id="usuario" placeholder="Ingrese su usuario">
+        </div>
+        <div class="mb-3">
+          <label for="clave" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="clave" placeholder="Ingrese su contraseña">
+        </div>
+        <a href="{{ url_for('panel') }}" class="btn btn-accent w-100">Ingresar</a>
+      </form>
+      <p class="text-muted small text-center mt-3 mb-0">
+        Acceso demostrativo para el panel interno del Proyecto Integrador.
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

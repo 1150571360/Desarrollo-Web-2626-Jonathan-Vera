@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Tecno Plus - Nuevo proveedor{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container" style="max-width: 640px;">
+    <h2 class="section-title mb-4">Nuevo proveedor</h2>
+
+    <div class="card card-tecno p-4">
+      <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+          {{ form.empresa.label(class="form-label") }}
+          {{ form.empresa(class="form-control" + (" is-invalid" if form.empresa.errors else "")) }}
+          {% for error in form.empresa.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.producto.label(class="form-label") }}
+          {{ form.producto(class="form-control" + (" is-invalid" if form.producto.errors else "")) }}
+          {% for error in form.producto.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.categoria.label(class="form-label") }}
+          {{ form.categoria(class="form-select" + (" is-invalid" if form.categoria.errors else "")) }}
+          {% for error in form.categoria.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.contacto.label(class="form-label") }}
+          {{ form.contacto(class="form-control" + (" is-invalid" if form.contacto.errors else "")) }}
+          {% for error in form.contacto.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-4">
+          {{ form.frecuencia.label(class="form-label") }}
+          {{ form.frecuencia(class="form-select" + (" is-invalid" if form.frecuencia.errors else "")) }}
+          {% for error in form.frecuencia.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="d-flex gap-2">
+          {{ form.submit(class="btn btn-accent flex-fill") }}
+          <a href="{{ url_for('proveedores') }}" class="btn btn-outline-tecno flex-fill">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

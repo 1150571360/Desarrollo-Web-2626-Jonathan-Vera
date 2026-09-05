@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Tecno Plus - Clientes{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+      <h2 class="section-title mb-0">Clientes</h2>
+      <a href="{{ url_for('nuevo_cliente') }}" class="btn btn-accent">
+        <i class="bi bi-person-plus-fill me-1"></i> Nuevo cliente
+      </a>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-tecno align-middle">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Tipo</th>
+            <th>Canal preferido</th>
+            <th>Compras</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for cliente in clientes %}
+          <tr>
+            <td>{{ cliente.nombre }}</td>
+            <td>{{ cliente.correo|lower }}</td>
+            <td>{{ cliente.telefono }}</td>
+            <td>
+              {% if cliente.tipo == 'Frecuente' %}
+                <span class="badge bg-success">Frecuente</span>
+              {% else %}
+                <span class="badge badge-tecno">Nuevo</span>
+              {% endif %}
+            </td>
+            <td>{{ cliente.canal_preferido }}</td>
+            <td>{{ cliente.compras }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" class="text-center text-muted">No hay clientes registrados.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

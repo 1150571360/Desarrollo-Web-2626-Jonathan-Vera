@@ -1,0 +1,21 @@
+<nav class="navbar navbar-expand-lg navbar-dark navbar-tecno sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
+      <span class="brand-icon">⚡</span> Tecno<span class="text-accent">Plus</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="menuPrincipal">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#quienes">Quiénes Somos</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#servicios">Servicios</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#contacto">Contacto</a></li>
+        <li class="nav-item">
+          <a class="nav-link btn btn-outline-accent ms-lg-2 px-3" href="{{ url_for('login') }}">Ingresar</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
