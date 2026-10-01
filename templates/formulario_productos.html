@@ -42,6 +42,12 @@
           {% endfor %}
         </div>
 
+                <div class="mb-3">
+          {{ form.unidades.label(class="form-label") }}
+          {{ form.unidades(class="form-control" + (" is-invalid" if form.unidades.errors else "")) }}
+          {% for error in form.unidades.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
         <div class="mb-3">
           {{ form.estado.label(class="form-label") }}
           {{ form.estado(class="form-select" + (" is-invalid" if form.estado.errors else "")) }}

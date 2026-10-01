@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, FloatField, TextAreaField, SubmitField
+from wtforms import StringField, SelectField, FloatField, IntegerField, TextAreaField, SubmitField
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 
@@ -24,12 +24,23 @@ class ProductoForm(FlaskForm):
         validators=[DataRequired(message="Seleccione una categoría.")]
     )
 
+    proveedor_id = SelectField(
+        "Proveedor (opcional)",
+        coerce=int,
+        validators=[Optional()]
+    )
+
     precio = FloatField(
         "Precio ($)",
         validators=[DataRequired(message="El precio es obligatorio."),
                     NumberRange(min=0.01, max=3000, message="El precio debe estar entre 0.01 y 3000.")]
     )
 
+    unidades = IntegerField(
+        "Unidades disponibles (stock)",
+        validators=[DataRequired(message="Indique las unidades disponibles."),
+                    NumberRange(min=0, max=100000, message="Debe ser un número entre 0 y 100000.")]
+    )
 
     estado = SelectField(
         "Estado",
@@ -37,23 +48,10 @@ class ProductoForm(FlaskForm):
         validators=[DataRequired(message="Seleccione el estado.")]
     )
 
-
-  unidades = FloatField(
-        "Unidades",
-        validators=[DataRequired(message="Las unidades son obligatorias."),
-                    NumberRange(min=0, message="Las unidades deben ser un número positivo.")]
-    )
-
     descripcion = TextAreaField(
         "Descripción",
         validators=[DataRequired(message="La descripción es obligatoria."),
                     Length(min=10, max=300, message="Debe tener entre 10 y 300 caracteres.")]
-    )
-
-    proveedor_id = SelectField(
-        "Proveedor (opcional)",
-        coerce=int,
-        validators=[Optional()]
     )
 
     submit = SubmitField("Guardar producto")

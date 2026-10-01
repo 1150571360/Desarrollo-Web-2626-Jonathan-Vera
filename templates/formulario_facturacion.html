@@ -3,63 +3,71 @@
 
 {% block content %}
 <section class="py-5">
-  <div class="container" style="max-width: 640px;">
-    <h2 class="section-title mb-4">{{ 'Editar factura' if modo == 'editar' else 'Nueva factura' }}</h2>
+  <div class="container" style="max-width: 820px;">
+    <h2 class="section-title mb-4 text-center">{{ 'Editar Factura' if modo == 'editar' else 'Nueva Factura' }}</h2>
 
     <div class="card card-tecno p-4">
-      <form method="POST" novalidate>
+      <form method="POST" id="formFactura" novalidate>
         {{ form.hidden_tag() }}
 
-        <div class="mb-3">
-          {{ form.numero.label(class="form-label") }}
-          {{ form.numero(class="form-control" + (" is-invalid" if form.numero.errors else ""), placeholder="001-001-000000123") }}
-          {% for error in form.numero.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            {{ form.numero.label(class="form-label") }}
+            {{ form.numero(class="form-control" + (" is-invalid" if form.numero.errors else "")) }}
+            {% for error in form.numero.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+          </div>
+          <div class="col-md-6">
+            {{ form.cliente_id.label(class="form-label") }}
+            {{ form.cliente_id(class="form-select" + (" is-invalid" if form.cliente_id.errors else "")) }}
+            {% for error in form.cliente_id.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+          </div>
         </div>
 
-        <div class="mb-3">
-          {{ form.cliente_id.label(class="form-label") }}
-          {{ form.cliente_id(class="form-select" + (" is-invalid" if form.cliente_id.errors else "")) }}
-          {% for error in form.cliente_id.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            {{ form.mesa.label(class="form-label") }}
+            {{ form.mesa(class="form-control" + (" is-invalid" if form.mesa.errors else "")) }}
+            {% for error in form.mesa.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+          </div>
+          <div class="col-md-4">
+            {{ form.fecha_hora.label(class="form-label") }}
+            {{ form.fecha_hora(class="form-control" + (" is-invalid" if form.fecha_hora.errors else "")) }}
+            {% for error in form.fecha_hora.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+          </div>
+          <div class="col-md-4">
+            {{ form.metodo_pago.label(class="form-label") }}
+            {{ form.metodo_pago(class="form-select" + (" is-invalid" if form.metodo_pago.errors else "")) }}
+            {% for error in form.metodo_pago.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+          </div>
         </div>
 
-        <div class="mb-3">
-          {{ form.sucursal.label(class="form-label") }}
-          {{ form.sucursal(class="form-control" + (" is-invalid" if form.sucursal.errors else "")) }}
-          {% for error in form.sucursal.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
-        </div>
-
-        <div class="mb-3">
-          {{ form.productos.label(class="form-label") }}
-          {{ form.productos(class="form-control" + (" is-invalid" if form.productos.errors else ""), rows="2", placeholder="Laptop, Mouse, Soporte técnico") }}
-          {% for error in form.productos.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
-        </div>
-
-        <div class="mb-3">
-          {{ form.subtotal.label(class="form-label") }}
-          {{ form.subtotal(class="form-control" + (" is-invalid" if form.subtotal.errors else "")) }}
-          {% for error in form.subtotal.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
-          <div class="form-text">El IVA (15%) y el total se calculan automáticamente.</div>
-        </div>
-
-        <div class="mb-3">
-          {{ form.metodo_pago.label(class="form-label") }}
-          {{ form.metodo_pago(class="form-select" + (" is-invalid" if form.metodo_pago.errors else "")) }}
-          {% for error in form.metodo_pago.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
-        </div>
-
-        <div class="mb-3">
+        <div class="mb-4">
           {{ form.estado.label(class="form-label") }}
           {{ form.estado(class="form-select" + (" is-invalid" if form.estado.errors else "")) }}
           {% for error in form.estado.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
         </div>
 
-        <div class="mb-4">
-          {{ form.fecha.label(class="form-label") }}
-          {{ form.fecha(class="form-control" + (" is-invalid" if form.fecha.errors else ""), placeholder="dd/mm/aaaa") }}
-          {% for error in form.fecha.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        <hr>
+        <h5 class="mb-3">Productos consumidos</h5>
+
+        <div class="d-none d-md-flex fw-bold text-muted small mb-1">
+          <div style="flex: 3;">Producto</div>
+          <div style="flex: 1;" class="text-center">Cantidad</div>
+          <div style="flex: 1;" class="text-end">Subtotal</div>
+          <div style="width: 40px;"></div>
         </div>
 
-        <div class="d-flex gap-2">
+        <div id="lineasProductos"></div>
+
+        <button type="button" id="btnAgregarLinea" class="btn btn-outline-tecno btn-sm mt-2">+ Agregar producto</button>
+
+        <div class="text-end mt-4">
+          <p class="mb-1">Subtotal: <strong id="txtSubtotal">$0.00</strong></p>
+          <p class="mb-1">IVA (15%): <strong id="txtIva">$0.00</strong></p>
+          <p class="mb-0 fs-5">Total: <strong id="txtTotal" class="text-accent">$0.00</strong></p>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
           {{ form.submit(class="btn btn-accent flex-fill") }}
           <a href="{{ url_for('facturacion') }}" class="btn btn-outline-tecno flex-fill">Cancelar</a>
         </div>
@@ -67,4 +75,76 @@
     </div>
   </div>
 </section>
+
+<!-- Plantilla oculta de una fila de producto (se clona con JS) -->
+<template id="plantillaLinea">
+  <div class="d-flex gap-2 align-items-start mb-2 fila-producto">
+    <select name="producto_id[]" class="form-select select-producto" style="flex: 3;" required>
+      <option value="">-- Elegir --</option>
+      {% for p in productos_disponibles %}
+        <option value="{{ p.id }}" data-precio="{{ p.precio }}">{{ p.nombre }} (${{ "%.2f"|format(p.precio) }})</option>
+      {% endfor %}
+    </select>
+    <input type="number" name="cantidad[]" class="form-control input-cantidad" style="flex: 1;" min="1" value="1" required>
+    <input type="text" class="form-control txt-subtotal-linea" style="flex: 1;" value="$0.00" readonly tabindex="-1">
+    <button type="button" class="btn btn-outline-danger btn-sm btn-quitar-linea" style="width: 40px;">✕</button>
+  </div>
+</template>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const contenedor = document.getElementById("lineasProductos");
+  const plantilla = document.getElementById("plantillaLinea");
+  const btnAgregar = document.getElementById("btnAgregarLinea");
+  const IVA_PORCENTAJE = 0.15;
+
+  function recalcularTotales() {
+    let subtotal = 0;
+    document.querySelectorAll(".fila-producto").forEach(fila => {
+      const select = fila.querySelector(".select-producto");
+      const cantidad = parseFloat(fila.querySelector(".input-cantidad").value) || 0;
+      const opcionSeleccionada = select.options[select.selectedIndex];
+      const precio = opcionSeleccionada ? parseFloat(opcionSeleccionada.dataset.precio) || 0 : 0;
+      const subtotalLinea = precio * cantidad;
+      fila.querySelector(".txt-subtotal-linea").value = "$" + subtotalLinea.toFixed(2);
+      subtotal += subtotalLinea;
+    });
+    const iva = subtotal * IVA_PORCENTAJE;
+    const total = subtotal + iva;
+    document.getElementById("txtSubtotal").textContent = "$" + subtotal.toFixed(2);
+    document.getElementById("txtIva").textContent = "$" + iva.toFixed(2);
+    document.getElementById("txtTotal").textContent = "$" + total.toFixed(2);
+  }
+
+  function agregarLinea(productoId = "", cantidad = 1) {
+    const nodo = plantilla.content.cloneNode(true);
+    const fila = nodo.querySelector(".fila-producto");
+
+    const select = fila.querySelector(".select-producto");
+    if (productoId) select.value = productoId;
+
+    fila.querySelector(".input-cantidad").value = cantidad;
+
+    select.addEventListener("change", recalcularTotales);
+    fila.querySelector(".input-cantidad").addEventListener("input", recalcularTotales);
+    fila.querySelector(".btn-quitar-linea").addEventListener("click", () => {
+      fila.remove();
+      recalcularTotales();
+    });
+
+    contenedor.appendChild(fila);
+    recalcularTotales();
+  }
+
+  btnAgregar.addEventListener("click", () => agregarLinea());
+
+  // Precarga las lineas existentes si estamos editando una factura
+  const lineasExistentes = {{ lineas_existentes | tojson }};
+  if (lineasExistentes.length > 0) {
+    lineasExistentes.forEach(l => agregarLinea(l.producto_id, l.cantidad));
+  } else {
+    agregarLinea(); // al menos una fila vacía para "nueva factura"
+  }
+});
+</script>
 {% endblock %}

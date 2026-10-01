@@ -17,12 +17,12 @@
           <tr>
             <th>N° Factura</th>
             <th>Cliente</th>
-            <th>Sucursal</th>
-            <th>Productos</th>
+            <th>Cédula</th>
+            <th>Mesa</th>
             <th>Subtotal</th>
-            <th>IVA (15%)</th>
+            <th>IVA</th>
             <th>Total</th>
-            <th>Pago</th>
+            <th>Método de Pago</th>
             <th>Estado</th>
             <th>Fecha</th>
             <th>Acciones</th>
@@ -32,9 +32,9 @@
           {% for factura in facturas %}
           <tr>
             <td>{{ factura.numero }}</td>
-            <td>{{ factura.cliente_nombre or 'N/A' }}</td>
-            <td>{{ factura.sucursal }}</td>
-            <td>{{ factura.productos }}</td>
+            <td>{{ factura.cliente_nombre }}</td>
+            <td>{{ factura.cliente_cedula or '—' }}</td>
+            <td>{{ factura.mesa or '—' }}</td>
             <td>${{ "%.2f"|format(factura.subtotal) }}</td>
             <td>${{ "%.2f"|format(factura.iva) }}</td>
             <td class="fw-bold text-accent">${{ "%.2f"|format(factura.total) }}</td>
@@ -46,10 +46,10 @@
                 <span class="badge bg-warning text-dark">Pendiente</span>
               {% endif %}
             </td>
-            <td>{{ factura.fecha }}</td>
+            <td>{{ factura.fecha_hora.strftime('%Y-%m-%d %H:%M') }}</td>
             <td>
               <div class="d-flex gap-2 flex-wrap">
-                <a href="{{ url_for('factura_pdf', id=factura.id) }}" class="btn btn-sm btn-outline-tecno">
+                <a href="{{ url_for('factura_pdf', id=factura.id) }}" class="btn btn-sm btn-danger">
                   <i class="bi bi-file-earmark-pdf"></i> PDF
                 </a>
                 <a href="{{ url_for('editar_facturacion', id=factura.id) }}" class="btn btn-sm btn-outline-tecno">Editar</a>

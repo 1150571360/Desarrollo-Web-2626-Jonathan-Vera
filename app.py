@@ -6,10 +6,6 @@ from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from reportlab.lib.units import cm
-
 from forms.producto_form import ProductoForm
 from forms.cliente_form import ClienteForm
 from forms.proveedor_form import ProveedorForm
@@ -150,9 +146,9 @@ def nuevo_producto():
         conn = get_conexion()
         cursor = conn.cursor()
         cursor.execute(
-            'INSERT INTO productos (nombre, categoria, precio, estado, descripcion, proveedor_id) '
-            'VALUES (%s, %s, %s, %s, %s, %s)',
-            (form.nombre.data, form.categoria.data, form.precio.data,
+            'INSERT INTO productos (nombre, categoria, precio, unidades, estado, descripcion, proveedor_id) '
+            'VALUES (%s, %s, %s, %s, %s, %s, %s)',
+            (form.nombre.data, form.categoria.data, form.precio.data, form.unidades.data,
              form.estado.data, form.descripcion.data, proveedor_id)
         )
         conn.commit()
@@ -161,7 +157,6 @@ def nuevo_producto():
         flash('Producto registrado correctamente.', 'success')
         return redirect(url_for('productos'))
     return render_template('formulario_productos.html', form=form, modo='nuevo')
-
 
 @app.route('/productos/editar/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -184,10 +179,10 @@ def editar_producto(id):
         conn = get_conexion()
         cursor = conn.cursor()
         cursor.execute(
-            'UPDATE productos SET nombre=%s, categoria=%s, precio=%s, estado=%s, '
+            'UPDATE productos SET nombre=%s, categoria=%s, precio=%s, unidades=%s, estado=%s, '
             'descripcion=%s, proveedor_id=%s WHERE id=%s',
-            (form.nombre.data, form.categoria.data, form.precio.data, form.estado.data,
-             form.descripcion.data, proveedor_id, id)
+            (form.nombre.data, form.categoria.data, form.precio.data, form.unidades.data,
+             form.estado.data, form.descripcion.data, proveedor_id, id)
         )
         conn.commit()
         cursor.close()
@@ -234,9 +229,9 @@ def nuevo_cliente():
         conn = get_conexion()
         cursor = conn.cursor()
         cursor.execute(
-            'INSERT INTO clientes (nombre, correo, telefono, tipo, canal_preferido, compras) '
-            'VALUES (%s, %s, %s, %s, %s, %s)',
-            (form.nombre.data, form.correo.data, form.telefono.data,
+            'INSERT INTO clientes (nombre, cedula, correo, telefono, tipo, canal_preferido, compras) '
+            'VALUES (%s, %s, %s, %s, %s, %s, %s)',
+            (form.nombre.data, form.cedula.data, form.correo.data, form.telefono.data,
              form.tipo.data, form.canal_preferido.data, form.compras.data)
         )
         conn.commit()
@@ -266,9 +261,9 @@ def editar_cliente(id):
         conn = get_conexion()
         cursor = conn.cursor()
         cursor.execute(
-            'UPDATE clientes SET nombre=%s, correo=%s, telefono=%s, tipo=%s, '
+            'UPDATE clientes SET nombre=%s, cedula=%s, correo=%s, telefono=%s, tipo=%s, '
             'canal_preferido=%s, compras=%s WHERE id=%s',
-            (form.nombre.data, form.correo.data, form.telefono.data, form.tipo.data,
+            (form.nombre.data, form.cedula.data, form.correo.data, form.telefono.data, form.tipo.data,
              form.canal_preferido.data, form.compras.data, id)
         )
         conn.commit()
@@ -376,22 +371,36 @@ def eliminar_proveedor(id):
 
 
 # ---------------------------------------------------------------------------
-# MODULO FACTURACION - MySQL - JOIN con clientes + PDF con IVA 15%
+# MODULO FACTURACION - MySQL - múltiples productos por factura + PDF estilo SRI
 # ---------------------------------------------------------------------------
 
 IVA_PORCENTAJE = 0.15
 
 
+def obtener_cliente_por_id(cliente_id):
+    conn = get_conexion()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('SELECT * FROM clientes WHERE id = %s', (cliente_id,))
+    fila = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return fila
+
+
+def obtener_productos_disponibles():
+    conn = get_conexion()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT id, nombre, precio, unidades FROM productos WHERE estado = 'Disponible' AND unidades > 0 ORDER BY nombre")
+    filas = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return filas
+
 @app.route('/facturacion')
 def facturacion():
     conn = get_conexion()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute('''
-        SELECT f.*, c.nombre AS cliente_nombre
-        FROM facturas f
-        LEFT JOIN clientes c ON f.cliente_id = c.id
-        ORDER BY f.id DESC
-    ''')
+    cursor.execute('SELECT * FROM facturas ORDER BY id DESC')
     filas = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -403,26 +412,88 @@ def facturacion():
 def nueva_facturacion():
     form = FacturacionForm()
     form.cliente_id.choices = obtener_choices_clientes()
+
     if form.validate_on_submit():
-        subtotal = form.subtotal.data
-        iva = round(subtotal * IVA_PORCENTAJE, 2)
-        total = round(subtotal + iva, 2)
+        producto_ids = request.form.getlist('producto_id[]')
+        cantidades = request.form.getlist('cantidad[]')
 
-        conn = get_conexion()
-        cursor = conn.cursor()
-        cursor.execute(
-            'INSERT INTO facturas (numero, cliente_id, sucursal, productos, subtotal, iva, total, '
-            'metodo_pago, estado, fecha) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
-            (form.numero.data, form.cliente_id.data, form.sucursal.data, form.productos.data,
-             subtotal, iva, total, form.metodo_pago.data, form.estado.data, form.fecha.data)
-        )
-        conn.commit()
-        cursor.close()
-        conn.close()
-        flash('Factura registrada correctamente.', 'success')
-        return redirect(url_for('facturacion'))
-    return render_template('formulario_facturacion.html', form=form, modo='nuevo')
+        lineas_validas = [
+            (int(pid), int(cant)) for pid, cant in zip(producto_ids, cantidades)
+            if pid and int(cant or 0) > 0
+        ]
 
+        if not lineas_validas:
+            flash('Debe agregar al menos un producto a la factura.', 'danger')
+        else:
+            cliente = obtener_cliente_por_id(form.cliente_id.data)
+
+            conn = get_conexion()
+            cursor = conn.cursor(dictionary=True)
+
+            # Primero validamos que haya stock suficiente para TODO antes de guardar nada
+            subtotal = 0.0
+            detalles = []
+            error_stock = None
+            for producto_id, cantidad in lineas_validas:
+                cursor.execute('SELECT nombre, precio, unidades FROM productos WHERE id = %s', (producto_id,))
+                producto = cursor.fetchone()
+                if producto:
+                    if cantidad > producto['unidades']:
+                        error_stock = f"No hay suficiente stock de '{producto['nombre']}' (disponible: {producto['unidades']})."
+                        break
+                    subtotal_linea = float(producto['precio']) * cantidad
+                    subtotal += subtotal_linea
+                    detalles.append((producto_id, producto['nombre'], producto['precio'], cantidad, subtotal_linea))
+
+            if error_stock:
+                flash(error_stock, 'danger')
+                cursor.close()
+                conn.close()
+                return render_template(
+                    'formulario_facturacion.html',
+                    form=form, modo='nuevo',
+                    productos_disponibles=obtener_productos_disponibles(),
+                    lineas_existentes=[]
+                )
+
+            iva = round(subtotal * IVA_PORCENTAJE, 2)
+            total = round(subtotal + iva, 2)
+
+            cursor.execute(
+                'INSERT INTO facturas (numero, cliente_id, cliente_nombre, cliente_cedula, mesa, '
+                'fecha_hora, metodo_pago, estado, subtotal, iva, total) '
+                'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
+                (form.numero.data, cliente['id'], cliente['nombre'], cliente.get('cedula'),
+                 form.mesa.data, form.fecha_hora.data, form.metodo_pago.data, form.estado.data,
+                 round(subtotal, 2), iva, total)
+            )
+            factura_id = cursor.lastrowid
+
+            for producto_id, nombre, precio, cantidad, subtotal_linea in detalles:
+                cursor.execute(
+                    'INSERT INTO factura_detalle (factura_id, producto_id, producto_nombre, '
+                    'precio_unitario, cantidad, subtotal_linea) VALUES (%s, %s, %s, %s, %s, %s)',
+                    (factura_id, producto_id, nombre, precio, cantidad, subtotal_linea)
+                )
+                # Resta el stock vendido
+                cursor.execute(
+                    'UPDATE productos SET unidades = unidades - %s WHERE id = %s',
+                    (cantidad, producto_id)
+                )
+
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            flash('Factura registrada correctamente.', 'success')
+            return redirect(url_for('facturacion'))
+
+    return render_template(
+        'formulario_facturacion.html',
+        form=form, modo='nuevo',
+        productos_disponibles=obtener_productos_disponibles(),
+        lineas_existentes=[]
+    )
 
 @app.route('/facturacion/editar/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -440,54 +511,115 @@ def editar_facturacion(id):
     form = FacturacionForm(data=factura) if request.method == 'GET' else FacturacionForm()
     form.cliente_id.choices = obtener_choices_clientes()
 
+    if request.method == 'GET':
+        form.cliente_id.data = factura['cliente_id']
+
     if form.validate_on_submit():
-        subtotal = form.subtotal.data
-        iva = round(subtotal * IVA_PORCENTAJE, 2)
-        total = round(subtotal + iva, 2)
+        producto_ids = request.form.getlist('producto_id[]')
+        cantidades = request.form.getlist('cantidad[]')
 
-        conn = get_conexion()
-        cursor = conn.cursor()
-        cursor.execute(
-            'UPDATE facturas SET numero=%s, cliente_id=%s, sucursal=%s, productos=%s, subtotal=%s, '
-            'iva=%s, total=%s, metodo_pago=%s, estado=%s, fecha=%s WHERE id=%s',
-            (form.numero.data, form.cliente_id.data, form.sucursal.data, form.productos.data,
-             subtotal, iva, total, form.metodo_pago.data, form.estado.data, form.fecha.data, id)
-        )
-        conn.commit()
-        cursor.close()
-        conn.close()
-        flash('Factura actualizada correctamente.', 'success')
-        return redirect(url_for('facturacion'))
+        lineas_validas = [
+            (int(pid), int(cant)) for pid, cant in zip(producto_ids, cantidades)
+            if pid and int(cant or 0) > 0
+        ]
 
-    return render_template('formulario_facturacion.html', form=form, modo='editar', id=id)
+        if not lineas_validas:
+            flash('Debe agregar al menos un producto a la factura.', 'danger')
+        else:
+            cliente = obtener_cliente_por_id(form.cliente_id.data)
+
+            conn = get_conexion()
+            cursor = conn.cursor(dictionary=True)
+
+            subtotal = 0.0
+            detalles = []
+            for producto_id, cantidad in lineas_validas:
+                cursor.execute('SELECT nombre, precio FROM productos WHERE id = %s', (producto_id,))
+                producto = cursor.fetchone()
+                if producto:
+                    subtotal_linea = float(producto['precio']) * cantidad
+                    subtotal += subtotal_linea
+                    detalles.append((producto_id, producto['nombre'], producto['precio'], cantidad, subtotal_linea))
+
+            iva = round(subtotal * IVA_PORCENTAJE, 2)
+            total = round(subtotal + iva, 2)
+
+            cursor.execute(
+                'UPDATE facturas SET numero=%s, cliente_id=%s, cliente_nombre=%s, cliente_cedula=%s, '
+                'mesa=%s, fecha_hora=%s, metodo_pago=%s, estado=%s, subtotal=%s, iva=%s, total=%s '
+                'WHERE id=%s',
+                (form.numero.data, cliente['id'], cliente['nombre'], cliente.get('cedula'),
+                 form.mesa.data, form.fecha_hora.data, form.metodo_pago.data, form.estado.data,
+                 round(subtotal, 2), iva, total, id)
+            )
+
+            cursor.execute('DELETE FROM factura_detalle WHERE factura_id = %s', (id,))
+            for producto_id, nombre, precio, cantidad, subtotal_linea in detalles:
+                cursor.execute(
+                    'INSERT INTO factura_detalle (factura_id, producto_id, producto_nombre, '
+                    'precio_unitario, cantidad, subtotal_linea) VALUES (%s, %s, %s, %s, %s, %s)',
+                    (id, producto_id, nombre, precio, cantidad, subtotal_linea)
+                )
+
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            flash('Factura actualizada correctamente.', 'success')
+            return redirect(url_for('facturacion'))
+
+    conn = get_conexion()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('SELECT producto_id, cantidad FROM factura_detalle WHERE factura_id = %s', (id,))
+    lineas_existentes = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        'formulario_facturacion.html',
+        form=form, modo='editar', id=id,
+        productos_disponibles=obtener_productos_disponibles(),
+        lineas_existentes=lineas_existentes
+    )
 
 
 @app.route('/facturacion/eliminar/<int:id>', methods=['POST'])
 @login_required
 def eliminar_facturacion(id):
     conn = get_conexion()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
+
+    # Devuelve el stock de cada producto antes de borrar la factura
+    cursor.execute('SELECT producto_id, cantidad FROM factura_detalle WHERE factura_id = %s', (id,))
+    detalles = cursor.fetchall()
+    for d in detalles:
+        if d['producto_id']:
+            cursor.execute('UPDATE productos SET unidades = unidades + %s WHERE id = %s', (d['cantidad'], d['producto_id']))
+
     cursor.execute('DELETE FROM facturas WHERE id = %s', (id,))
     conn.commit()
     cursor.close()
     conn.close()
-    flash('Factura eliminada.', 'info')
+    flash('Factura eliminada (stock restaurado).', 'info')
     return redirect(url_for('facturacion'))
 
 
 @app.route('/facturacion/pdf/<int:id>')
 @login_required
 def factura_pdf(id):
-    """Genera y descarga la factura en PDF, con el 15% de IVA."""
+    """Genera la factura en PDF con formato similar al SRI (Ecuador)."""
+    from reportlab.lib.pagesizes import letter
+    from reportlab.lib.units import cm
+    from reportlab.lib import colors
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+    from reportlab.lib.styles import getSampleStyleSheet
+
     conn = get_conexion()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute('''
-        SELECT f.*, c.nombre AS cliente_nombre, c.correo AS cliente_correo
-        FROM facturas f
-        LEFT JOIN clientes c ON f.cliente_id = c.id
-        WHERE f.id = %s
-    ''', (id,))
+    cursor.execute('SELECT * FROM facturas WHERE id = %s', (id,))
     factura = cursor.fetchone()
+    cursor.execute('SELECT * FROM factura_detalle WHERE factura_id = %s', (id,))
+    detalle = cursor.fetchall()
     cursor.close()
     conn.close()
 
@@ -495,60 +627,92 @@ def factura_pdf(id):
         abort(404)
 
     buffer = io.BytesIO()
-    doc = canvas.Canvas(buffer, pagesize=letter)
-    ancho, alto = letter
+    doc = SimpleDocTemplate(buffer, pagesize=letter, topMargin=1.5 * cm, bottomMargin=1.5 * cm)
+    estilos = getSampleStyleSheet()
+    elementos = []
 
-    # Encabezado
-    doc.setFont("Helvetica-Bold", 18)
-    doc.drawString(2 * cm, alto - 2 * cm, "TecnoPlus")
-    doc.setFont("Helvetica", 10)
-    doc.drawString(2 * cm, alto - 2.6 * cm, "Factura de venta")
-    doc.line(2 * cm, alto - 2.8 * cm, ancho - 2 * cm, alto - 2.8 * cm)
+    estilo_emisor = estilos['Normal']
+    tabla_encabezado = Table([
+        [
+            Paragraph("<b>TECNO PLUS</b><br/>Venta de equipos y servicios tecnológicos<br/>"
+                      "Av. Principal y Secundaria, Quito - Ecuador<br/>"
+                      "Teléfono: 02-2345678<br/>RUC: 1792345678001", estilo_emisor),
+            Paragraph(f"<b>FACTURA</b><br/>N°: {factura['numero']}<br/>"
+                      f"Fecha emisión: {factura['fecha_hora'].strftime('%d/%m/%Y %H:%M')}<br/>"
+                      f"Ambiente: PRUEBAS<br/>Autorización: {factura['numero'].replace('-', '')}0001",
+                      estilo_emisor),
+        ]
+    ], colWidths=[9 * cm, 9 * cm])
+    tabla_encabezado.setStyle(TableStyle([
+        ('BOX', (0, 0), (-1, -1), 1, colors.black),
+        ('INNERGRID', (0, 0), (-1, -1), 1, colors.black),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('TOPPADDING', (0, 0), (-1, -1), 8),
+        ('LEFTPADDING', (0, 0), (-1, -1), 8),
+    ]))
+    elementos.append(tabla_encabezado)
+    elementos.append(Spacer(1, 0.5 * cm))
 
-    # Datos de la factura
-    y = alto - 3.5 * cm
-    doc.setFont("Helvetica-Bold", 11)
-    doc.drawString(2 * cm, y, f"N° Factura: {factura['numero']}")
-    y -= 0.7 * cm
-    doc.setFont("Helvetica", 11)
-    doc.drawString(2 * cm, y, f"Cliente: {factura['cliente_nombre'] or 'N/A'}")
-    y -= 0.6 * cm
-    doc.drawString(2 * cm, y, f"Correo: {factura.get('cliente_correo') or 'N/A'}")
-    y -= 0.6 * cm
-    doc.drawString(2 * cm, y, f"Sucursal: {factura['sucursal']}")
-    y -= 0.6 * cm
-    doc.drawString(2 * cm, y, f"Fecha: {factura['fecha']}")
-    y -= 0.6 * cm
-    doc.drawString(2 * cm, y, f"Método de pago: {factura['metodo_pago']}")
-    y -= 0.6 * cm
-    doc.drawString(2 * cm, y, f"Estado: {factura['estado']}")
+    tabla_cliente = Table([
+        [Paragraph(f"<b>Razón social / Nombre:</b> {factura['cliente_nombre']}", estilo_emisor)],
+        [Paragraph(f"<b>Identificación:</b> {factura['cliente_cedula'] or 'N/A'}", estilo_emisor)],
+        [Paragraph(f"<b>Método de pago:</b> {factura['metodo_pago']} &nbsp;&nbsp; "
+                   f"<b>Mesa:</b> {factura['mesa'] or 'N/A'} &nbsp;&nbsp; "
+                   f"<b>Estado:</b> {factura['estado']}", estilo_emisor)],
+    ], colWidths=[18 * cm])
+    tabla_cliente.setStyle(TableStyle([
+        ('BOX', (0, 0), (-1, -1), 1, colors.black),
+        ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('LEFTPADDING', (0, 0), (-1, -1), 8),
+        ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+    ]))
+    elementos.append(tabla_cliente)
+    elementos.append(Spacer(1, 0.5 * cm))
 
-    # Productos
-    y -= 1 * cm
-    doc.setFont("Helvetica-Bold", 11)
-    doc.drawString(2 * cm, y, "Productos/servicios:")
-    y -= 0.6 * cm
-    doc.setFont("Helvetica", 10)
-    for item in factura['productos'].split(','):
-        doc.drawString(2.5 * cm, y, f"- {item.strip()}")
-        y -= 0.5 * cm
+    datos_tabla = [["Cant.", "Descripción", "P. Unitario", "Subtotal"]]
+    for linea in detalle:
+        datos_tabla.append([
+            str(linea['cantidad']),
+            linea['producto_nombre'],
+            f"${float(linea['precio_unitario']):.2f}",
+            f"${float(linea['subtotal_linea']):.2f}",
+        ])
 
-    # Totales
-    y -= 0.8 * cm
-    doc.line(2 * cm, y, ancho - 2 * cm, y)
-    y -= 0.7 * cm
-    doc.setFont("Helvetica", 11)
-    doc.drawString(2 * cm, y, f"Subtotal: ${float(factura['subtotal']):.2f}")
-    y -= 0.6 * cm
-    doc.drawString(2 * cm, y, f"IVA (15%): ${float(factura['iva']):.2f}")
-    y -= 0.6 * cm
-    doc.setFont("Helvetica-Bold", 13)
-    doc.drawString(2 * cm, y, f"TOTAL: ${float(factura['total']):.2f}")
+    tabla_detalle = Table(datos_tabla, colWidths=[2 * cm, 9 * cm, 3.5 * cm, 3.5 * cm])
+    tabla_detalle.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1a2744')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('ALIGN', (0, 0), (0, -1), 'CENTER'),
+        ('ALIGN', (2, 0), (3, -1), 'RIGHT'),
+        ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+    ]))
+    elementos.append(tabla_detalle)
+    elementos.append(Spacer(1, 0.4 * cm))
 
-    doc.setFont("Helvetica-Oblique", 8)
-    doc.drawString(2 * cm, 1.5 * cm, f"Generado el {datetime.now().strftime('%d/%m/%Y %H:%M')}")
+    tabla_totales = Table([
+        ["Subtotal:", f"${float(factura['subtotal']):.2f}"],
+        ["IVA (15%):", f"${float(factura['iva']):.2f}"],
+        ["TOTAL A PAGAR:", f"${float(factura['total']):.2f}"],
+    ], colWidths=[14.5 * cm, 3.5 * cm])
+    tabla_totales.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
+        ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, -1), (-1, -1), 12),
+        ('LINEABOVE', (0, -1), (-1, -1), 1, colors.black),
+        ('TOPPADDING', (0, -1), (-1, -1), 6),
+    ]))
+    elementos.append(tabla_totales)
+    elementos.append(Spacer(1, 1 * cm))
+    elementos.append(Paragraph(
+        "<i>Este documento es una representación impresa de uso interno, generada por el sistema Tecno Plus.</i>",
+        estilos['Normal']
+    ))
 
-    doc.save()
+    doc.build(elementos)
     buffer.seek(0)
 
     return send_file(
