@@ -13,7 +13,7 @@ CONFIG = {
     'port': os.environ.get('DB_PORT', '3306'),
     'user': os.environ.get('DB_USER', 'root'),
     'password': os.environ.get('DB_PASSWORD', ''),
-    'database': os.environ.get('DB_NAME', 'tecnoplus_db'),
+    'database': os.environ.get('DB_NAME', 'tecno_plus'),
 }
 
 

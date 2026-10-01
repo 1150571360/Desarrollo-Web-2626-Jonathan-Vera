@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Tecno Plus - Registro{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container" style="max-width: 420px;">
+    <div class="card card-tecno p-4">
+      <h2 class="section-title text-center mb-4">Crear cuenta</h2>
+
+      {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% if mensajes %}
+          {% for categoria, mensaje in mensajes %}
+            <div class="alert alert-{{ categoria }}">{{ mensaje }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+          {{ form.usuario.label(class="form-label") }}
+          {{ form.usuario(class="form-control" + (" is-invalid" if form.usuario.errors else "")) }}
+          {% for error in form.usuario.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.password.label(class="form-label") }}
+          {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else "")) }}
+          {% for error in form.password.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-4">
+          {{ form.confirmar.label(class="form-label") }}
+          {{ form.confirmar(class="form-control" + (" is-invalid" if form.confirmar.errors else "")) }}
+          {% for error in form.confirmar.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        </div>
+
+        {{ form.submit(class="btn btn-accent w-100") }}
+      </form>
+
+      <p class="text-muted small text-center mt-3 mb-0">
+        ¿Ya tienes cuenta? <a href="{{ url_for('login') }}">Inicia sesión aquí</a>
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

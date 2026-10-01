@@ -30,10 +30,18 @@ class ProductoForm(FlaskForm):
                     NumberRange(min=0.01, max=3000, message="El precio debe estar entre 0.01 y 3000.")]
     )
 
+
     estado = SelectField(
         "Estado",
         choices=[("Disponible", "Disponible"), ("Agotado", "Agotado")],
         validators=[DataRequired(message="Seleccione el estado.")]
+    )
+
+
+  unidades = FloatField(
+        "Unidades",
+        validators=[DataRequired(message="Las unidades son obligatorias."),
+                    NumberRange(min=0, message="Las unidades deben ser un número positivo.")]
     )
 
     descripcion = TextAreaField(
